@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monetag App</title> <!-- এখানে আপনার অ্যাপের নাম দিন -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- এই লাইনে আপনার Monetag জোন ID দিন -->
+  <script src='//libtl.com/sdk.js' data-zone='9748242' data-sdk='show_9748242'></script>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* === কাস্টমাইজ করার অংশ === */
+    :root {
+      --primary: #ff4081;  /* প্রাথমিক রং পরিবর্তন করুন */
+      --secondary: #ff6a88; /* সেকেন্ডারি রং পরিবর্তন করুন */
+      --accent: #4caf50;    /* একসেন্ট রং পরিবর্তন করুন */
+      --light: #fffafc;     /* হালকা রং পরিবর্তন করুন */
+      --dark: #333;         /* ডার্ক রং পরিবর্তন করুন */
+      --gray: #f0f0f0;      /* গ্রে রং পরিবর্তন করুন */
+      --shadow: 0 4px 12px rgba(0,0,0,0.1); /* শ্যাডো ইফেক্ট পরিবর্তন করুন */
+    }
+    
+    /* === সাধারণ স্টাইল === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #fffafc 0%, #ffeef4 100%);
+      color: var(--dark);
+      min-height: 100vh;
+      padding-bottom: 70px;
+    }
+    
+    .container {
+      max-width: 100%;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      padding: 15px 0;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      border-radius: 0 0 20px 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    
+    .app-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .section {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .section.active {
+      display: block;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    
+    .profile-pic {
+      margin: 0 auto 15px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      padding: 3px;
+      background: white;
+    }
+    
+    .profile-pic img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .user-name {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: var(--dark);
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-box {
+      background: var(--gray);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+    
+    .stat-icon {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+    }
+    
+    .stat-value {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    
+    .stat-label {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 14px 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      margin: 8px 0;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      width: 100%;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(255, 64, 129, 0.3);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 6px 15px rgba(76, 175, 80, 0.3);
+    }
+    
+    .progress-container {
+      margin: 25px 0;
+    }
+    
+    .circular-progress {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent) 0% 0%, var(--gray) 0% 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    
+    .circular-progress::before {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: white;
+    }
+    
+    .progress-value {
+      position: relative;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--dark);
+    }
+    
+    .progress-text {
+      font-size: 1rem;
+      margin: 5px 0;
+    }
+    
+    .daily-stats {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+      padding: 0 10px;
+    }
+    
+    .daily-stat {
+      text-align: center;
+    }
+    
+    .daily-stat span {
+      display: block;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    
+    .watched {
+      color: var(--primary);
+    }
+    
+    .remaining {
+      color: var(--accent);
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    .form-input, .form-select {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .history-log {
+      max-height: 350px;
+      overflow-y: auto;
+      padding: 10px;
+    }
+    
+    .history-item {
+      background: var(--gray);
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+    
+    .history-item p {
+      margin: 5px 0;
+      font-size: 0.9rem;
+    }
+    
+    nav {
+      display: flex;
+      justify-content: space-around;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: white;
+      padding: 12px 0;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+      z-index: 100;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 5px 15px;
+      border-radius: 12px;
+      transition: background 0.3s;
+    }
+    
+    .nav-item.active {
+      background: rgba(255, 64, 129, 0.1);
+    }
+    
+    .nav-icon {
+      font-size: 1.2rem;
+      margin-bottom: 3px;
+      color: #888;
+    }
+    
+    .nav-item.active .nav-icon {
+      color: var(--primary);
+    }
+    
+    .nav-label {
+      font-size: 0.7rem;
+      color: #888;
+    }
+    
+    .nav-item.active .nav-label {
+      color: var(--primary);
+      font-weight: 500;
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      box-shadow: var(--shadow);
+      z-index: 1000;
+      animation: slideDown 0.3s ease, fadeOut 0.5s ease 2.5s forwards;
+      display: none;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideDown {
+      from { top: -50px; opacity: 0; }
+      to { top: 20px; opacity: 1; }
+    }
+    
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; visibility: hidden; }
+    }
+    
+    @media (min-width: 768px) {
+      .container {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      
+      .stats-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="notification" id="notification"></div>
+  
+  <header>
+    <!-- এখানে আপনার অ্যাপের নাম পরিবর্তন করুন -->
+    <div class="app-title">Monetag App</div>
+  </header>
+  
+  <div class="container">
+    <!-- Home Section -->
+    <div id="home" class="section active">
+      <div class="card">
+        <div class="profile-pic">
+          <!-- প্রোফাইল ছবির URL পরিবর্তন করুন -->
+          <img id="userPic" src="https://img.icons8.com/ios-filled/100/000000/user-male-circle.png" alt="Profile">
+        </div>
+        <h2 class="user-name" id="userName">👤 User Name</h2>
+        
+        <div class="stats-container">
+          <div class="stat-box">
+            <div class="stat-icon">📺</div>
+            <div class="stat-value" id="totalAds">0</div>
+            <div class="stat-label">Total Ads</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value" id="totalWithdraw">0</div>
+            <div class="stat-label">Withdrawn</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-icon">💼</div>
+            <div class="stat-value" id="userBalance">0</div>
+            <div class="stat-label">Balance</div>
+          </div>
+        </div>
+        
+        <button id="watchAdHome" class="btn">
+          <i class="fas fa-play-circle"></i> Watch Ad & Earn Points
+        </button>
+      </div>
+      
+      <div class="card">
+        <h3>Daily Progress</h3>
+        <div class="progress-container">
+          <div class="circular-progress" id="progressCircle">
+            <div class="progress-value">
+              <span id="circlePercent">0</span>%
+            </div>
+          </div>
+          <div class="daily-stats">
+            <div class="daily-stat">
+              <span class="watched" id="todayWatched">0</span>
+              <div>Watched</div>
+            </div>
+            <div class="daily-stat">
+              <span class="remaining" id="todayRemaining">100</span>
+              <div>Remaining</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earn Section -->
+    <div id="earn" class="section">
+      <div class="card">
+        <h3><i class="fas fa-gift"></i> Earn Points</h3>
+        
+        <div class="progress-container">
+          <div class="circular-progress" id="earnProgressCircle">
+            <div class="progress-value">
+              <span id="earnCirclePercent">0</span>%
+            </div>
+          </div>
+          <div class="progress-text" id="progressText">Ready to watch ads</div>
+          
+          <div class="daily-stats">
+            <div class="daily-stat">
+              <span class="watched" id="earnTodayWatched">0</span>
+              <div>Watched</div>
+            </div>
+            <div class="daily-stat">
+              <span class="remaining" id="earnTodayRemaining">100</span>
+              <div>Remaining</div>
+            </div>
+          </div>
+        </div>
+        
+        <button id="watchAd" class="btn btn-secondary">
+          <i class="fas fa-play-circle"></i> Watch Ad Now
+        </button>
+      </div>
+      
+      <div class="card">
+        <h3><i class="fas fa-info-circle"></i> How it works</h3>
+        <!-- এখানে আপনার অ্যাপের কাজের পদ্ধতি বর্ণনা করুন -->
+        <p>Watch ads to earn points. Each ad gives you 1 point.</p>
+        <p>You can watch up to 100 ads per day.</p>
+        <p>Withdraw your points anytime using popular payment methods.</p>
+      </div>
+    </div>
+
+    <!-- Withdraw Section -->
+    <div id="withdraw" class="section">
+      <div class="card">
+        <h3><i class="fas fa-money-bill-wave"></i> Withdraw Points</h3>
+        <p>Your Balance: <strong><span id="withdrawBalance">0</span> points</strong></p>
+        
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select id="method" class="form-select">
+            <!-- এখানে আপনার পেমেন্ট মেথড যোগ/পরিবর্তন করুন -->
+            <option value="Bkash">Bkash</option>
+            <option value="Nagad">Nagad</option>
+            <option value="Rocket">Rocket</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Amount (min 10 points)</label>
+          <input type="number" id="amount" class="form-input" placeholder="Enter amount">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Account Number</label>
+          <input type="text" id="number" class="form-input" placeholder="Enter your number">
+        </div>
+        
+        <button id="submitWithdraw" class="btn">
+          <i class="fas fa-paper-plane"></i> Submit Request
+        </button>
+      </div>
+    </div>
+
+    <!-- History Section -->
+    <div id="history" class="section">
+      <div class="card">
+        <h3><i class="fas fa-history"></i> Withdraw History</h3>
+        <div class="history-log" id="withdrawLog">
+          <p>No withdraw history yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav>
+    <div class="nav-item active" onclick="switchSection('home')">
+      <div class="nav-icon"><i class="fas fa-home"></i></div>
+      <div class="nav-label">Home</div>
+    </div>
+    <div class="nav-item" onclick="switchSection('earn')">
+      <div class="nav-icon"><i class="fas fa-coins"></i></div>
+      <div class="nav-label">Earn</div>
+    </div>
+    <div class="nav-item" onclick="switchSection('withdraw')">
+      <div class="nav-icon"><i class="fas fa-wallet"></i></div>
+      <div class="nav-label">Withdraw</div>
+    </div>
+    <div class="nav-item" onclick="switchSection('history')">
+      <div class="nav-icon"><i class="fas fa-history"></i></div>
+      <div class="nav-label">History</div>
+    </div>
+  </nav>
+
+  <!-- Script Section -->
+  <script>
+    Telegram.WebApp.ready();
+    const user = Telegram.WebApp.initDataUnsafe?.user;
+    const name = `${user?.first_name || 'Unknown'} ${user?.last_name || ''}`.trim();
+    document.getElementById("userName").textContent = name;
+
+    // লোকাল স্টোরেজ থেকে ডেটা লোড করা
+    let points = parseInt(localStorage.getItem('watch_ad_points')) || 0;
+    let totalAds = parseInt(localStorage.getItem('watch_ad_total')) || 0;
+    let totalWithdraw = parseInt(localStorage.getItem('withdraw_total')) || 0;
+    let withdrawHistory = JSON.parse(localStorage.getItem('withdraw_history') || '[]');
+
+    // দৈনিক সীমা নির্ধারণ (100 পরিবর্তন করে আপনার পছন্দমতো সংখ্যা দিন)
+    const dailyLimit = 100;
+    
+    const today = new Date().toISOString().split('T')[0];
+    let dailyData = JSON.parse(localStorage.getItem('daily_ad_data') || '{}');
+    if (dailyData.date !== today) {
+      dailyData = { date: today, views: 0 };
+    }
+
+    function showNotification(message, isSuccess = true) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.style.backgroundColor = isSuccess ? '#4caf50' : '#ff4081';
+      notification.style.color = 'white';
+      notification.style.display = 'block';
+      
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+
+    function updateDisplays() {
+      document.getElementById('totalAds').textContent = totalAds;
+      document.getElementById('totalWithdraw').textContent = totalWithdraw;
+      document.getElementById('userBalance').textContent = points;
+      document.getElementById('withdrawBalance').textContent = points;
+      document.getElementById('todayWatched').textContent = dailyData.views;
+      document.getElementById('todayRemaining').textContent = dailyLimit - dailyData.views;
+      document.getElementById('earnTodayWatched').textContent = dailyData.views;
+      document.getElementById('earnTodayRemaining').textContent = dailyLimit - dailyData.views;
+
+      const percent = Math.min((dailyData.views / dailyLimit) * 100, 100);
+      document.getElementById('circlePercent').textContent = Math.round(percent);
+      document.getElementById('earnCirclePercent').textContent = Math.round(percent);
+      
+      document.getElementById('progressCircle').style.background = `conic-gradient(var(--accent) 0% ${percent}%, var(--gray) ${percent}% 100%)`;
+      document.getElementById('earnProgressCircle').style.background = `conic-gradient(var(--accent) 0% ${percent}%, var(--gray) ${percent}% 100%)`;
+
+      let historyHTML = withdrawHistory.length
+        ? withdrawHistory.map(h => `
+            <div class="history-item">
+              <p><i class="fas fa-calendar"></i> <strong>Date:</strong> ${h.date}</p>
+              <p><i class="fas fa-coins"></i> <strong>Amount:</strong> ${h.amount} pts</p>
+              <p><i class="fas fa-money-check"></i> <strong>Method:</strong> ${h.method}</p>
+              <p><i class="fas fa-phone"></i> <strong>Number:</strong> ${h.number}</p>
+            </div>
+          `).join('')
+        : '<p>No withdraw history yet.</p>';
+      document.getElementById('withdrawLog').innerHTML = historyHTML;
+    }
+
+    updateDisplays();
+
+    // ✅ Home button redirects to Earn section
+    document.getElementById("watchAdHome").addEventListener("click", () => {
+      switchSection('earn');
+      updateNavIndicator('earn');
+    });
+
+    // Earn page ad logic
+    document.getElementById('watchAd').addEventListener('click', () => {
+      if (!window.show_9748242) {
+        showNotification("Ad not available right now. Try again later.", false);
+        return;
+      }
+      
+      if (dailyData.views >= dailyLimit) {
+        showNotification(`You've reached the daily limit of ${dailyLimit} ads.`, false);
+        return;
+      }
+
+      document.getElementById("progressText").textContent = "Showing Ad...";
+      show_9748242();
+
+      let adAborted = false;
+      window.addEventListener('blur', () => adAborted = true, { once: true });
+
+      setTimeout(() => {
+        if (adAborted) {
+          showNotification("You skipped the ad. Please watch again.", false);
+          document.getElementById("progressText").textContent = "Ad skipped.";
+          return;
+        }
+
+        let countdown = 15; // বিজ্ঞাপন দেখার সময় (সেকেন্ডে)
+        document.getElementById("progressText").textContent = `Please watch full ad (${countdown}s)`;
+        const interval = setInterval(() => {
+          if (adAborted) {
+            clearInterval(interval);
+            showNotification("You skipped the ad. Please watch again.", false);
+            document.getElementById("progressText").textContent = "Ad skipped.";
+            return;
+          }
+
+          countdown--;
+          if (countdown > 0) {
+            document.getElementById("progressText").textContent = `Please watch full ad (${countdown}s)`;
+          } else {
+            clearInterval(interval);
+            points++;
+            totalAds++;
+            dailyData.views++;
+            localStorage.setItem('watch_ad_points', points);
+            localStorage.setItem('watch_ad_total', totalAds);
+            localStorage.setItem('daily_ad_data', JSON.stringify(dailyData));
+            updateDisplays();
+            document.getElementById("progressText").textContent = "Ad complete! 1 point added.";
+            showNotification("Ad completed! 1 point added to your balance.");
+          }
+        }, 1000);
+      }, 2000);
+    });
+
+    // Withdraw Logic
+    document.getElementById('submitWithdraw').addEventListener('click', () => {
+      const btn = document.getElementById('submitWithdraw');
+      btn.disabled = true;
+      btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Processing...";
+
+      const m = document.getElementById('method').value;
+      const a = parseInt(document.getElementById('amount').value);
+      const n = document.getElementById('number').value.trim();
+      
+      // ন্যূনতম উত্তোলন পরিমাণ (10 পরিবর্তন করে আপনার পছন্দমতো সংখ্যা দিন)
+      const minWithdraw = 10;
+      
+      if (!n || isNaN(a) || a < minWithdraw || a > points) {
+        showNotification(`Invalid input or not enough points. Minimum withdrawal is ${minWithdraw} points.`, false);
+        btn.disabled = false;
+        btn.innerHTML = "<i class='fas fa-paper-plane'></i> Submit Request";
+        return;
+      }
+
+      // আপনার Telegram বটের তথ্য দিন
+      const botToken = "7607803237:AAGNajWax5DDbR9tm0MQGQtBR-qJoBSga1k";
+      const chatId = "@payProfWoof";
+      
+      const msg = `📤 Withdraw Request\n👤 ${name}\n💵 ${a} pts\n📱 ${m}\n📞 ${n}`;
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ chat_id: chatId, text: msg })
+      }).then(() => {
+        points -= a;
+        totalWithdraw += a;
+        withdrawHistory.unshift({ date: new Date().toLocaleString(), amount: a, method: m, number: n });
+        localStorage.setItem('watch_ad_points', points);
+        localStorage.setItem('withdraw_total', totalWithdraw);
+        localStorage.setItem('withdraw_history', JSON.stringify(withdrawHistory));
+        updateDisplays();
+        showNotification("Withdraw request sent successfully!");
+      }).catch(() => {
+        showNotification("Failed to send request. Try again later.", false);
+      }).finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = "<i class='fas fa-paper-plane'></i> Submit Request";
+      });
+    });
+
+    function switchSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      updateNavIndicator(id);
+    }
+    
+    function updateNavIndicator(activeId) {
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      const navItems = document.querySelectorAll('.nav-item');
+      switch(activeId) {
+        case 'home':
+          navItems[0].classList.add('active');
+          break;
+        case 'earn':
+          navItems[1].classList.add('active');
+          break;
+        case 'withdraw':
+          navItems[2].classList.add('active');
+          break;
+        case 'history':
+          navItems[3].classList.add('active');
+          break;
+      }
+    }
+  </script>
+</body>
+</html>

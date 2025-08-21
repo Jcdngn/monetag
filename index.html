@@ -11,15 +11,22 @@
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* === কাস্টমাইজ করার অংশ === */
+    /* === নতুন কালার থিম === */
     :root {
-      --primary: #ff4081;  /* প্রাথমিক রং পরিবর্তন করুন */
-      --secondary: #ff6a88; /* সেকেন্ডারি রং পরিবর্তন করুন */
-      --accent: #4caf50;    /* একসেন্ট রং পরিবর্তন করুন */
-      --light: #fffafc;     /* হালকা রং পরিবর্তন করুন */
-      --dark: #333;         /* ডার্ক রং পরিবর্তন করুন */
-      --gray: #f0f0f0;      /* গ্রে রং পরিবর্তন করুন */
-      --shadow: 0 4px 12px rgba(0,0,0,0.1); /* শ্যাডো ইফেক্ট পরিবর্তন করুন */
+      --primary: #6c5ce7;      /* প্রিমিয়াম পার্পল */
+      --primary-gradient: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+      --secondary: #00cec9;    /* টিল/সায়ান */
+      --secondary-gradient: linear-gradient(135deg, #00cec9 0%, #81ecec 100%);
+      --accent: #fd79a8;       /* পিঙ্ক */
+      --accent-gradient: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+      --success: #00b894;      /* গ্রিন */
+      --light: #f7f7f7;        /* হালকা গ্রে */
+      --dark: #2d3436;         /* ডার্ক গ্রে */
+      --card-bg: #ffffff;      /* কার্ড ব্যাকগ্রাউন্ড */
+      --text-dark: #2d3436;    /* ডার্ক টেক্সট */
+      --text-light: #636e72;   /* লাইট টেক্সট */
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.15);
     }
     
     /* === সাধারণ স্টাইল === */
@@ -27,14 +34,16 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      transition: all 0.3s ease;
     }
     
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #fffafc 0%, #ffeef4 100%);
-      color: var(--dark);
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: var(--text-dark);
       min-height: 100vh;
-      padding-bottom: 70px;
+      padding-bottom: 80px;
+      line-height: 1.6;
     }
     
     .container {
@@ -44,17 +53,34 @@
     
     header {
       text-align: center;
-      padding: 15px 0;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      padding: 20px 0;
+      background: var(--primary-gradient);
       color: white;
-      border-radius: 0 0 20px 20px;
-      margin-bottom: 20px;
+      border-radius: 0 0 25px 25px;
+      margin-bottom: 25px;
       box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    header::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: rotate(45deg);
+      pointer-events: none;
     }
     
     .app-title {
-      font-size: 1.5rem;
-      font-weight: bold;
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      position: relative;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
     }
     
     .section {
@@ -67,22 +93,37 @@
     }
     
     .card {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 20px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
       box-shadow: var(--shadow);
       text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+    
+    .card h3 {
+      margin-bottom: 15px;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1.4rem;
     }
     
     .profile-pic {
       margin: 0 auto 15px;
-      width: 100px;
-      height: 100px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
-      border: 3px solid var(--primary);
-      padding: 3px;
-      background: white;
+      border: 4px solid white;
+      padding: 4px;
+      background: var(--primary-gradient);
+      box-shadow: var(--shadow);
     }
     
     .profile-pic img {
@@ -93,59 +134,87 @@
     }
     
     .user-name {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       margin-bottom: 15px;
-      color: var(--dark);
+      color: var(--text-dark);
+      font-weight: 700;
     }
     
     .stats-container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      gap: 15px;
       margin-bottom: 20px;
     }
     
     .stat-box {
-      background: var(--gray);
-      border-radius: 12px;
-      padding: 12px;
+      background: var(--light);
+      border-radius: 16px;
+      padding: 15px;
       text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+    
+    .stat-box:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
     }
     
     .stat-icon {
-      font-size: 1.5rem;
-      margin-bottom: 5px;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
     }
     
     .stat-value {
-      font-weight: bold;
-      font-size: 1.1rem;
+      font-weight: 800;
+      font-size: 1.3rem;
+      margin-bottom: 5px;
     }
     
     .stat-label {
-      font-size: 0.8rem;
-      color: #666;
+      font-size: 0.85rem;
+      color: var(--text-light);
+      font-weight: 500;
     }
     
     .btn {
       display: inline-block;
-      padding: 14px 25px;
-      font-size: 1rem;
-      font-weight: 600;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      padding: 16px 28px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      background: var(--primary-gradient);
       color: white;
       border: none;
       border-radius: 50px;
       cursor: pointer;
-      margin: 8px 0;
-      transition: all 0.3s ease;
+      margin: 10px 0;
       box-shadow: var(--shadow);
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background: var(--secondary-gradient);
+      transition: all 0.5s ease;
+      z-index: -1;
+    }
+    
+    .btn:hover::before {
       width: 100%;
     }
     
     .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(255, 64, 129, 0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
     }
     
     .btn:active {
@@ -153,11 +222,19 @@
     }
     
     .btn-secondary {
-      background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+      background: var(--secondary-gradient);
     }
     
     .btn-secondary:hover {
-      box-shadow: 0 6px 15px rgba(76, 175, 80, 0.3);
+      box-shadow: 0 10px 20px rgba(0, 206, 201, 0.3);
+    }
+    
+    .btn-accent {
+      background: var(--accent-gradient);
+    }
+    
+    .btn-accent:hover {
+      box-shadow: 0 10px 20px rgba(253, 121, 168, 0.3);
     }
     
     .progress-container {
@@ -166,52 +243,60 @@
     
     .circular-progress {
       position: relative;
-      width: 140px;
-      height: 140px;
+      width: 150px;
+      height: 150px;
       border-radius: 50%;
-      background: conic-gradient(var(--accent) 0% 0%, var(--gray) 0% 100%);
+      background: conic-gradient(var(--secondary) 0% 0%, var(--light) 0% 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
     
     .circular-progress::before {
       content: "";
       position: absolute;
-      width: 120px;
-      height: 120px;
+      width: 130px;
+      height: 130px;
       border-radius: 50%;
-      background: white;
+      background: var(--card-bg);
     }
     
     .progress-value {
       position: relative;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: var(--dark);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text-dark);
     }
     
     .progress-text {
-      font-size: 1rem;
-      margin: 5px 0;
+      font-size: 1.1rem;
+      margin: 8px 0;
+      font-weight: 500;
     }
     
     .daily-stats {
       display: flex;
       justify-content: space-between;
-      margin: 15px 0;
-      padding: 0 10px;
+      margin: 20px 0;
+      padding: 0 15px;
     }
     
     .daily-stat {
       text-align: center;
+      padding: 10px;
+      border-radius: 12px;
+      background: var(--light);
+      flex: 1;
+      margin: 0 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     }
     
     .daily-stat span {
       display: block;
-      font-weight: bold;
-      font-size: 1.1rem;
+      font-weight: 800;
+      font-size: 1.2rem;
     }
     
     .watched {
@@ -219,32 +304,35 @@
     }
     
     .remaining {
-      color: var(--accent);
+      color: var(--success);
     }
     
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       text-align: left;
     }
     
     .form-label {
       display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--text-dark);
     }
     
     .form-input, .form-select {
       width: 100%;
-      padding: 14px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
+      padding: 16px;
+      border: 2px solid var(--light);
+      border-radius: 12px;
       font-size: 1rem;
-      transition: border-color 0.3s;
+      transition: all 0.3s ease;
+      background: var(--light);
     }
     
     .form-input:focus, .form-select:focus {
       outline: none;
       border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
     }
     
     .history-log {
@@ -254,16 +342,32 @@
     }
     
     .history-item {
-      background: var(--gray);
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 12px;
+      background: var(--light);
+      padding: 18px;
+      border-radius: 16px;
+      margin-bottom: 15px;
       text-align: left;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      border-left: 4px solid var(--primary);
+      transition: all 0.3s ease;
+    }
+    
+    .history-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
     }
     
     .history-item p {
-      margin: 5px 0;
-      font-size: 0.9rem;
+      margin: 6px 0;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .history-item i {
+      margin-right: 10px;
+      color: var(--primary);
+      width: 20px;
     }
     
     nav {
@@ -273,9 +377,10 @@
       bottom: 0;
       width: 100%;
       background: white;
-      padding: 12px 0;
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+      padding: 15px 0;
+      box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
       z-index: 100;
+      border-radius: 25px 25px 0 0;
     }
     
     .nav-item {
@@ -283,33 +388,38 @@
       flex-direction: column;
       align-items: center;
       cursor: pointer;
-      padding: 5px 15px;
-      border-radius: 12px;
-      transition: background 0.3s;
+      padding: 8px 15px;
+      border-radius: 15px;
+      transition: all 0.3s ease;
     }
     
     .nav-item.active {
-      background: rgba(255, 64, 129, 0.1);
+      background: rgba(108, 92, 231, 0.1);
+      transform: translateY(-5px);
     }
     
     .nav-icon {
-      font-size: 1.2rem;
-      margin-bottom: 3px;
-      color: #888;
+      font-size: 1.4rem;
+      margin-bottom: 5px;
+      color: var(--text-light);
+      transition: all 0.3s ease;
     }
     
     .nav-item.active .nav-icon {
       color: var(--primary);
+      transform: scale(1.1);
     }
     
     .nav-label {
-      font-size: 0.7rem;
-      color: #888;
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: 500;
+      transition: all 0.3s ease;
     }
     
     .nav-item.active .nav-label {
       color: var(--primary);
-      font-weight: 500;
+      font-weight: 600;
     }
     
     .notification {
@@ -318,17 +428,41 @@
       left: 50%;
       transform: translateX(-50%);
       background: white;
-      padding: 15px 25px;
+      padding: 18px 30px;
       border-radius: 50px;
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-hover);
       z-index: 1000;
       animation: slideDown 0.3s ease, fadeOut 0.5s ease 2.5s forwards;
       display: none;
+      font-weight: 600;
+      text-align: center;
+      min-width: 300px;
+      max-width: 90%;
+    }
+    
+    .info-box {
+      background: rgba(108, 92, 231, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 15px 0;
+      border-left: 4px solid var(--primary);
+    }
+    
+    .info-box p {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .info-box i {
+      margin-right: 10px;
+      color: var(--primary);
+      width: 20px;
     }
     
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     @keyframes slideDown {
@@ -339,6 +473,16 @@
     @keyframes fadeOut {
       from { opacity: 1; }
       to { opacity: 0; visibility: hidden; }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
     }
     
     @media (min-width: 768px) {
@@ -387,7 +531,7 @@
           </div>
         </div>
         
-        <button id="watchAdHome" class="btn">
+        <button id="watchAdHome" class="btn pulse">
           <i class="fas fa-play-circle"></i> Watch Ad & Earn Points
         </button>
       </div>
@@ -439,16 +583,19 @@
           </div>
         </div>
         
-        <button id="watchAd" class="btn btn-secondary">
+        <button id="watchAd" class="btn btn-secondary pulse">
           <i class="fas fa-play-circle"></i> Watch Ad Now
         </button>
       </div>
       
       <div class="card">
         <h3><i class="fas fa-info-circle"></i> How it works</h3>
-        <p>Watch ads to earn points. Each ad gives you 1 point.</p>
-        <p>You can watch up to 100 ads per day.</p>
-        <p>Withdraw your points anytime using popular payment methods.</p>
+        <div class="info-box">
+          <p><i class="fas fa-play-circle"></i> Watch ads to earn points</p>
+          <p><i class="fas fa-coins"></i> Each ad gives you 1 point</p>
+          <p><i class="fas fa-calendar-day"></i> Watch up to 100 ads per day</p>
+          <p><i class="fas fa-wallet"></i> Withdraw your points anytime</p>
+        </div>
       </div>
     </div>
 
@@ -477,7 +624,7 @@
           <input type="text" id="number" class="form-input" placeholder="Enter your number">
         </div>
         
-        <button id="submitWithdraw" class="btn">
+        <button id="submitWithdraw" class="btn btn-accent">
           <i class="fas fa-paper-plane"></i> Submit Request
         </button>
       </div>
@@ -563,7 +710,7 @@
     function showNotification(message, isSuccess = true) {
       const notification = document.getElementById('notification');
       notification.textContent = message;
-      notification.style.backgroundColor = isSuccess ? '#4caf50' : '#ff4081';
+      notification.style.backgroundColor = isSuccess ? 'var(--success)' : 'var(--accent)';
       notification.style.color = 'white';
       notification.style.display = 'block';
       
@@ -586,8 +733,8 @@
       document.getElementById('circlePercent').textContent = Math.round(percent);
       document.getElementById('earnCirclePercent').textContent = Math.round(percent);
       
-      document.getElementById('progressCircle').style.background = `conic-gradient(var(--accent) 0% ${percent}%, var(--gray) ${percent}% 100%)`;
-      document.getElementById('earnProgressCircle').style.background = `conic-gradient(var(--accent) 0% ${percent}%, var(--gray) ${percent}% 100%)`;
+      document.getElementById('progressCircle').style.background = `conic-gradient(var(--secondary) 0% ${percent}%, var(--light) ${percent}% 100%)`;
+      document.getElementById('earnProgressCircle').style.background = `conic-gradient(var(--secondary) 0% ${percent}%, var(--light) ${percent}% 100%)`;
 
       let historyHTML = withdrawHistory.length
         ? withdrawHistory.map(h => `

@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monetag App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- Monetag SDK -->
+  <script src='//libtl.com/sdk.js' data-zone='9748242' data-sdk='show_9748242'></script>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* === নতুন কালার থিম === */
+    :root {
+      --primary: #6c63ff;      /* প্রিমিয়াম পার্পল */
+      --secondary: #4a40e5;    /* গাঢ় পার্পল */
+      --accent: #ff6b6b;       /* সফট রেড */
+      --success: #4cd964;      /* সবুজ */
+      --warning: #ffcc00;      /* হলুদ */
+      --light: #f8f9fe;        /* হালকা ব্যাকগ্রাউন্ড */
+      --dark: #2d2b4e;         /* গাঢ় টেক্সট */
+      --gray: #e2e8f0;         /* গ্রে */
+      --card-bg: #ffffff;      /* কার্ড ব্যাকগ্রাউন্ড */
+      --shadow: 0 10px 30px rgba(108, 99, 255, 0.15);
+      --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    }
+    
+    /* === সাধারণ স্টাইল === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    
+    .container {
+      max-width: 100%;
+      padding: 15px;
+    }
+    
+    header {
+      text-align: center;
+      padding: 20px 0;
+      background: var(--gradient);
+      color: white;
+      border-radius: 0 0 25px 25px;
+      margin-bottom: 25px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    header::before {
+      content: "";
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 150px;
+      height: 150px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+    }
+    
+    header::after {
+      content: "";
+      position: absolute;
+      bottom: -30px;
+      left: -30px;
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+    }
+    
+    .app-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .app-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin-top: 5px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .section {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .section.active {
+      display: block;
+    }
+    
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .profile-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .profile-pic {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      padding: 3px;
+      background: white;
+      margin-right: 15px;
+    }
+    
+    .profile-pic img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .user-info {
+      text-align: left;
+    }
+    
+    .user-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--dark);
+    }
+    
+    .user-id {
+      font-size: 0.8rem;
+      color: #777;
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    
+    .stat-box {
+      background: var(--light);
+      border-radius: 15px;
+      padding: 15px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .stat-box:hover {
+      background: var(--gradient);
+      color: white;
+    }
+    
+    .stat-box:hover .stat-label {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .stat-icon {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+    
+    .stat-value {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 0.75rem;
+      color: #666;
+      transition: color 0.3s ease;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 16px 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: var(--gradient);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      margin: 10px 0;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--accent) 0%, #ff8787 100%);
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, var(--success) 0%, #3ac45a 100%);
+    }
+    
+    .btn-success:hover {
+      box-shadow: 0 10px 20px rgba(76, 217, 100, 0.3);
+    }
+    
+    .progress-container {
+      margin: 25px 0;
+    }
+    
+    .circular-progress {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: conic-gradient(var(--success) 0% 0%, var(--gray) 0% 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    
+    .circular-progress::before {
+      content: "";
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: var(--card-bg);
+    }
+    
+    .progress-value {
+      position: relative;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--dark);
+      z-index: 1;
+    }
+    
+    .progress-text {
+      font-size: 1rem;
+      margin: 5px 0;
+      color: #666;
+    }
+    
+    .daily-stats {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+      padding: 0 15px;
+    }
+    
+    .daily-stat {
+      text-align: center;
+      padding: 10px;
+      border-radius: 12px;
+      background: var(--light);
+      flex: 1;
+      margin: 0 5px;
+    }
+    
+    .daily-stat span {
+      display: block;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    
+    .watched {
+      color: var(--success);
+    }
+    
+    .remaining {
+      color: var(--accent);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark);
+    }
+    
+    .form-input, .form-select {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid var(--gray);
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+      background: var(--light);
+    }
+    
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+    }
+    
+    .history-log {
+      max-height: 350px;
+      overflow-y: auto;
+      padding: 10px;
+    }
+    
+    .history-item {
+      background: var(--light);
+      padding: 15px;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      text-align: left;
+      border-left: 4px solid var(--primary);
+      transition: transform 0.3s ease;
+    }
+    
+    .history-item:hover {
+      transform: translateX(5px);
+    }
+    
+    .history-item p {
+      margin: 5px 0;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .history-item i {
+      margin-right: 10px;
+      color: var(--primary);
+    }
+    
+    nav {
+      display: flex;
+      justify-content: space-around;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: var(--card-bg);
+      padding: 15px 0;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+      z-index: 100;
+      border-radius: 25px 25px 0 0;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 8px 15px;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-item.active {
+      background: rgba(108, 99, 255, 0.1);
+      transform: translateY(-5px);
+    }
+    
+    .nav-icon {
+      font-size: 1.3rem;
+      margin-bottom: 5px;
+      color: #aaa;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-item.active .nav-icon {
+      color: var(--primary);
+      transform: scale(1.1);
+    }
+    
+    .nav-label {
+      font-size: 0.75rem;
+      color: #aaa;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-item.active .nav-label {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      z-index: 1000;
+      animation: slideDown 0.3s ease, fadeOut 0.5s ease 2.5s forwards;
+      display: none;
+      font-weight: 500;
+    }
+    
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .section-title i {
+      margin-right: 10px;
+      color: var(--primary);
+    }
+    
+    .info-card {
+      background: var(--light);
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    
+    .info-card p {
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .info-card p:last-child {
+      margin-bottom: 0;
+    }
+    
+    /* Admin Panel Styles */
+    .admin-panel {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 20px;
+      box-shadow: var(--shadow);
+    }
+    
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    
+    .admin-table th, .admin-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .admin-table th {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .admin-table tr:hover {
+      background-color: #f5f5f5;
+    }
+    
+    .admin-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+    
+    .admin-btn.delete {
+      background: var(--accent);
+    }
+
+    /* Admin-specific nav item */
+    .nav-item.admin-only {
+      display: none;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideDown {
+      from { top: -50px; opacity: 0; }
+      to { top: 20px; opacity: 1; }
+    }
+    
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; visibility: hidden; }
+    }
+    
+    @media (min-width: 768px) {
+      .container {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="notification" id="notification"></div>
+  
+  <header>
+    <div class="app-title">Monetag App</div>
+    <div class="app-subtitle">Earn by watching ads</div>
+  </header>
+  
+  <div class="container">
+    <!-- Home Section -->
+    <div id="home" class="section active">
+      <div class="card">
+        <div class="profile-container">
+          <div class="profile-pic">
+            <img id="userPic" src="https://img.icons8.com/ios-filled/100/6c63ff/user-male-circle.png" alt="Profile">
+          </div>
+          <div class="user-info">
+            <h2 class="user-name" id="userName">👤 User Name</h2>
+            <div class="user-id" id="userId">ID: 123456789</div>
+          </div>
+        </div>
+        
+        <div class="stats-container">
+          <div class="stat-box">
+            <div class="stat-icon">📺</div>
+            <div class="stat-value" id="totalAds">0</div>
+            <div class="stat-label">Total Ads</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value" id="totalWithdraw">0</div>
+            <div class="stat-label">Withdrawn</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-icon">💼</div>
+            <div class="stat-value" id="userBalance">0</div>
+            <div class="stat-label">Balance</div>
+          </div>
+        </div>
+        
+        <button id="watchAdHome" class="btn">
+          <i class="fas fa-play-circle"></i> Watch Ad & Earn Points
+        </button>
+      </div>
+      
+      <div class="card">
+        <h3 class="section-title"><i class="fas fa-chart-line"></i> Daily Progress</h3>
+        <div class="progress-container">
+          <div class="circular-progress" id="progressCircle">
+            <div class="progress-value">
+              <span id="circlePercent">0</span>%
+            </div>
+          </div>
+          <div class="daily-stats">
+            <div class="daily-stat">
+              <span class="watched" id="todayWatched">0</span>
+              <div>Watched</div>
+            </div>
+            <div class="daily-stat">
+              <span class="remaining" id="todayRemaining">100</span>
+              <div>Remaining</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earn Section -->
+    <div id="earn" class="section">
+      <div class="card">
+        <h3 class="section-title"><i class="fas fa-gift"></i> Earn Points</h3>
+        
+        <div class="progress-container">
+          <div class="circular-progress" id="earnProgressCircle">
+            <div class="progress-value">
+              <span id="earnCirclePercent">0</span>%
+            </div>
+          </div>
+          <div class="progress-text" id="progressText">Ready to watch ads</div>
+          
+          <div class="daily-stats">
+            <div class="daily-stat">
+              <span class="watched" id="earnTodayWatched">0</span>
+              <div>Watched</div>
+            </div>
+            <div class="daily-stat">
+              <span class="remaining" id="earnTodayRemaining">100</span>
+              <div>Remaining</div>
+            </div>
+          </div>
+        </div>
+        
+        <button id="watchAd" class="btn btn-secondary">
+          <i class="fas fa-play-circle"></i> Watch Ad Now
+        </button>
+      </div>
+      
+      <div class="info-card">
+        <h3><i class="fas fa-info-circle"></i> How it works</h3>
+        <p><i class="fas fa-check-circle"></i> Watch ads to earn points. Each ad gives you 1 point.</p>
+        <p><i class="fas fa-check-circle"></i> You can watch up to 100 ads per day.</p>
+        <p><i class="fas fa-check-circle"></i> Withdraw your points anytime using popular payment methods.</p>
+      </div>
+    </div>
+
+    <!-- Withdraw Section -->
+    <div id="withdraw" class="section">
+      <div class="card">
+        <h3 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdraw Points</h3>
+        <p>Your Balance: <strong><span id="withdrawBalance">0</span> points</strong></p>
+        
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select id="method" class="form-select">
+            <option value="Bkash">Bkash</option>
+            <option value="Nagad">Nagad</option>
+            <option value="Rocket">Rocket</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Amount (min 10 points)</label>
+          <input type="number" id="amount" class="form-input" placeholder="Enter amount">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Account Number</label>
+          <input type="text" id="number" class="form-input" placeholder="Enter your number">
+        </div>
+        
+        <button id="submitWithdraw" class="btn btn-success">
+          <i class="fas fa-paper-plane"></i> Submit Request
+        </button>
+      </div>
+    </div>
+
+    <!-- History Section -->
+    <div id="history" class="section">
+      <div class="card">
+        <h3 class="section-title"><i class="fas fa-history"></i> Withdraw History</h3>
+        <div class="history-log" id="withdrawLog">
+          <p>No withdraw history yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Section (Hidden by default) -->
+    <div id="admin" class="section">
+      <div class="card">
+        <h3 class="section-title"><i class="fas fa-user-shield"></i> Admin Panel</h3>
+        
+        <div class="form-group">
+          <label class="form-label">Admin Password</label>
+          <input type="password" id="adminPassword" class="form-input" placeholder="Enter admin password">
+          <button id="adminLoginBtn" class="btn">Login as Admin</button>
+        </div>
+        
+        <div id="adminContent" style="display: none;">
+          <h4>All Users Withdraw History</h4>
+          <div class="history-log" id="adminWithdrawLog">
+            <p>No withdraw history found.</p>
+          </div>
+          
+          <h4>User Management</h4>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Balance</th>
+                <th>Total Ads</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="userList">
+              <!-- User data will be populated here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav>
+    <div class="nav-item active" onclick="switchSection('home')">
+      <div class="nav-icon"><i class="fas fa-home"></i></div>
+      <div class="nav-label">Home</div>
+    </div>
+    <div class="nav-item" onclick="switchSection('earn')">
+      <div class="nav-icon"><i class="fas fa-coins"></i></div>
+      <div class="nav-label">Earn</div>
+    </div>
+    <div class="nav-item" onclick="switchSection('withdraw')">
+      <div class="nav-icon"><i class="fas fa-wallet"></i></div>
+      <div class="nav-label">Withdraw</div>
+    </div>
+    <div class="nav-item" onclick="switchSection('history')">
+      <div class="nav-icon"><i class="fas fa-history"></i></div>
+      <div class="nav-label">History</div>
+    </div>
+    <div class="nav-item admin-only" onclick="switchSection('admin')" id="adminNavItem">
+      <div class="nav-icon"><i class="fas fa-user-shield"></i></div>
+      <div class="nav-label">Admin</div>
+    </div>
+  </nav>
+
+  <!-- Script Section -->
+  <script>
+    Telegram.WebApp.ready();
+    const user = Telegram.WebApp.initDataUnsafe?.user;
+    const name = `${user?.first_name || 'Unknown'} ${user?.last_name || ''}`.trim();
+    const userId = user?.id || '123456789';
+    document.getElementById("userName").textContent = name;
+    document.getElementById("userId").textContent = `ID: ${userId}`;
+
+    // Admin password (এটি পরিবর্তন করুন প্রোডাকশনে)
+    const ADMIN_PASSWORD = "Habib7070";
+    
+    // Admin user IDs (এখানে আপনার Admin user IDs যোগ করুন)
+    const ADMIN_USER_IDS = ["123456789", "987654321"]; // উদাহরণ হিসেবে কিছু ID
+
+    // Check if current user is admin
+    const isAdmin = ADMIN_USER_IDS.includes(userId.toString());
+    
+    // Show admin nav item if user is admin
+    if (isAdmin) {
+      document.getElementById("adminNavItem").classList.remove("admin-only");
+    }
+
+    // লোকাল স্টোরেজ থেকে ডেটা লোড করা (ব্যবহারকারী আইডি অনুযায়ী)
+    let points = parseInt(localStorage.getItem(`watch_ad_points_${userId}`)) || 0;
+    let totalAds = parseInt(localStorage.getItem(`watch_ad_total_${userId}`)) || 0;
+    let totalWithdraw = parseInt(localStorage.getItem(`withdraw_total_${userId}`)) || 0;
+    let withdrawHistory = JSON.parse(localStorage.getItem(`withdraw_history_${userId}`) || '[]');
+
+    // দৈনিক সীমা নির্ধারণ
+    const dailyLimit = 100;
+    
+    const today = new Date().toISOString().split('T')[0];
+    let dailyData = JSON.parse(localStorage.getItem(`daily_ad_data_${userId}`) || '{}');
+    if (dailyData.date !== today) {
+      dailyData = { date: today, views: 0 };
+      localStorage.setItem(`daily_ad_data_${userId}`, JSON.stringify(dailyData));
+    }
+
+    // In-App Interstitial সেটআপ
+    let interstitialSession = {
+      count: 0,
+      lastShown: 0,
+      initialized: false
+    };
+
+    function initializeInterstitial() {
+      if (!interstitialSession.initialized) {
+        show_9748242({
+          type: 'inApp',
+          inAppSettings: {
+            frequency: 2,
+            capping: 0.1,
+            interval: 30,
+            timeout: 5,
+            everyPage: false
+          }
+        });
+        interstitialSession.initialized = true;
+        interstitialSession.lastShown = Date.now();
+      }
+    }
+
+    function showNotification(message, isSuccess = true) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.style.backgroundColor = isSuccess ? '#4cd964' : '#ff6b6b';
+      notification.style.color = 'white';
+      notification.style.display = 'block';
+      
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+
+    function updateDisplays() {
+      document.getElementById('totalAds').textContent = totalAds;
+      document.getElementById('totalWithdraw').textContent = totalWithdraw;
+      document.getElementById('userBalance').textContent = points;
+      document.getElementById('withdrawBalance').textContent = points;
+      document.getElementById('todayWatched').textContent = dailyData.views;
+      document.getElementById('todayRemaining').textContent = dailyLimit - dailyData.views;
+      document.getElementById('earnTodayWatched').textContent = dailyData.views;
+      document.getElementById('earnTodayRemaining').textContent = dailyLimit - dailyData.views;
+
+      const percent = Math.min((dailyData.views / dailyLimit) * 100, 100);
+      document.getElementById('circlePercent').textContent = Math.round(percent);
+      document.getElementById('earnCirclePercent').textContent = Math.round(percent);
+      
+      document.getElementById('progressCircle').style.background = `conic-gradient(var(--success) 0% ${percent}%, var(--gray) ${percent}% 100%)`;
+      document.getElementById('earnProgressCircle').style.background = `conic-gradient(var(--success) 0% ${percent}%, var(--gray) ${percent}% 100%)`;
+
+      let historyHTML = withdrawHistory.length
+        ? withdrawHistory.map(h => `
+            <div class="history-item">
+              <p><i class="fas fa-calendar"></i> <strong>Date:</strong> ${h.date}</p>
+              <p><i class="fas fa-coins"></i> <strong>Amount:</strong> ${h.amount} pts</p>
+              <p><i class="fas fa-money-check"></i> <strong>Method:</strong> ${h.method}</p>
+              <p><i class="fas fa-phone"></i> <strong>Number:</strong> ${h.number}</p>
+            </div>
+          `).join('')
+        : '<p>No withdraw history yet.</p>';
+      document.getElementById('withdrawLog').innerHTML = historyHTML;
+      
+      // Update admin panel if visible
+      if (document.getElementById('adminContent').style.display === 'block') {
+        loadAdminData();
+      }
+    }
+
+    // Admin functions
+    function loadAdminData() {
+      // Load all users' data
+      let allUsersData = [];
+      let allWithdrawHistory = [];
+      
+      // Loop through all localStorage keys
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        
+        // Check for user data
+        if (key.startsWith('watch_ad_points_')) {
+          const uid = key.replace('watch_ad_points_', '');
+          const userPoints = parseInt(localStorage.getItem(key));
+          const userTotalAds = parseInt(localStorage.getItem(`watch_ad_total_${uid}`)) || 0;
+          
+          allUsersData.push({
+            id: uid,
+            points: userPoints,
+            totalAds: userTotalAds
+          });
+        }
+        
+        // Check for withdraw history
+        if (key.startsWith('withdraw_history_')) {
+          const uid = key.replace('withdraw_history_', '');
+          const history = JSON.parse(localStorage.getItem(key) || '[]');
+          
+          history.forEach(item => {
+            allWithdrawHistory.push({
+              userId: uid,
+              ...item
+            });
+          });
+        }
+      }
+      
+      // Display users in admin panel
+      const userListHTML = allUsersData.map(user => `
+        <tr>
+          <td>${user.id}</td>
+          <td>${user.points}</td>
+          <td>${user.totalAds}</td>
+          <td>
+            <button class="admin-btn" onclick="editUser('${user.id}')">Edit</button>
+            <button class="admin-btn delete" onclick="deleteUser('${user.id}')">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+      
+      document.getElementById('userList').innerHTML = userListHTML || '<tr><td colspan="4">No users found</td></tr>';
+      
+      // Display withdraw history in admin panel
+      const adminHistoryHTML = allWithdrawHistory.length
+        ? allWithdrawHistory.map(h => `
+            <div class="history-item">
+              <p><i class="fas fa-user"></i> <strong>User ID:</strong> ${h.userId}</p>
+              <p><i class="fas fa-calendar"></i> <strong>Date:</strong> ${h.date}</p>
+              <p><i class="fas fa-coins"></i> <strong>Amount:</strong> ${h.amount} pts</p>
+              <p><i class="fas fa-money-check"></i> <strong>Method:</strong> ${h.method}</p>
+              <p><i class="fas fa-phone"></i> <strong>Number:</strong> ${h.number}</p>
+            </div>
+          `).join('')
+        : '<p>No withdraw history found.</p>';
+      document.getElementById('adminWithdrawLog').innerHTML = adminHistoryHTML;
+    }
+    
+    function editUser(userId) {
+      const newPoints = prompt(`Edit points for user ${userId}:`, localStorage.getItem(`watch_ad_points_${userId}`) || 0);
+      if (newPoints !== null && !isNaN(newPoints)) {
+        localStorage.setItem(`watch_ad_points_${userId}`, parseInt(newPoints));
+        showNotification(`User ${userId} points updated to ${newPoints}`);
+        loadAdminData();
+        updateDisplays();
+      }
+    }
+    
+    function deleteUser(userId) {
+      if (confirm(`Are you sure you want to delete user ${userId}? This will remove all their data.`)) {
+        localStorage.removeItem(`watch_ad_points_${userId}`);
+        localStorage.removeItem(`watch_ad_total_${userId}`);
+        localStorage.removeItem(`withdraw_total_${userId}`);
+        localStorage.removeItem(`withdraw_history_${userId}`);
+        localStorage.removeItem(`daily_ad_data_${userId}`);
+        showNotification(`User ${userId} has been deleted`);
+        loadAdminData();
+      }
+    }
+
+    updateDisplays();
+
+    // Admin login
+    document.getElementById('adminLoginBtn').addEventListener('click', () => {
+      const password = document.getElementById('adminPassword').value;
+      if (password === ADMIN_PASSWORD) {
+        document.getElementById('adminContent').style.display = 'block';
+        loadAdminData();
+        showNotification('Admin login successful');
+      } else {
+        showNotification('Invalid admin password', false);
+      }
+    });
+
+    // ✅ Home button redirects to Earn section
+    document.getElementById("watchAdHome").addEventListener("click", () => {
+      switchSection('earn');
+      updateNavIndicator('earn');
+    });
+
+    // Earn page ad logic
+    document.getElementById('watchAd').addEventListener('click', () => {
+      if (!window.show_9748242) {
+        showNotification("Ad not available right now. Try again later.", false);
+        return;
+      }
+      
+      if (dailyData.views >= dailyLimit) {
+        showNotification(`You've reached the daily limit of ${dailyLimit} ads.`, false);
+        return;
+      }
+
+      document.getElementById("progressText").textContent = "Showing Ad...";
+      
+      // Rewarded Popup ব্যবহার করে বিজ্ঞাপন দেখানো
+      show_9748242('pop').then(() => {
+        // বিজ্ঞাপন সফলভাবে দেখানো হলে পুরস্কার দিন
+        points++;
+        totalAds++;
+        dailyData.views++;
+        localStorage.setItem(`watch_ad_points_${userId}`, points);
+        localStorage.setItem(`watch_ad_total_${userId}`, totalAds);
+        localStorage.setItem(`daily_ad_data_${userId}`, JSON.stringify(dailyData));
+        updateDisplays();
+        document.getElementById("progressText").textContent = "Ad complete! 1 point added.";
+        showNotification("Ad completed! 1 point added to your balance.");
+        
+        // In-App Interstitial শুরু করুন (যদি আগে শুরু না হয়ে থাকে)
+        if (!interstitialSession.initialized) {
+          initializeInterstitial();
+        }
+      }).catch(e => {
+        // বিজ্ঞাপন দেখানোতে ত্রুটি হলে
+        showNotification("Failed to show ad. Please try again.", false);
+        document.getElementById("progressText").textContent = "Ad failed. Try again.";
+      });
+    });
+
+    // Withdraw Logic
+    document.getElementById('submitWithdraw').addEventListener('click', () => {
+      const method = document.getElementById('method').value;
+      const amount = parseInt(document.getElementById('amount').value);
+      const number = document.getElementById('number').value;
+      
+      if (!amount || amount < 10) {
+        showNotification("Minimum withdrawal is 10 points.", false);
+        return;
+      }
+      
+      if (amount > points) {
+        showNotification("Insufficient balance.", false);
+        return;
+      }
+      
+      if (!number) {
+        showNotification("Please enter your account number.", false);
+        return;
+      }
+      
+      // Withdraw প্রসেস
+      points -= amount;
+      totalWithdraw += amount;
+      
+      // Withdraw হিস্ট্রি যোগ করুন
+      const historyItem = {
+        date: new Date().toLocaleString(),
+        amount: amount,
+        method: method,
+        number: number
+      };
+      
+      withdrawHistory.unshift(historyItem);
+      
+      // লোকাল স্টোরেজে ডেটা সেভ করুন
+      localStorage.setItem(`watch_ad_points_${userId}`, points);
+      localStorage.setItem(`withdraw_total_${userId}`, totalWithdraw);
+      localStorage.setItem(`withdraw_history_${userId}`, JSON.stringify(withdrawHistory));
+      
+      // ✅ Admin panel-এ সমস্ত উত্তোলনের তথ্য দেখানোর জন্য
+      loadAdminData();
+      
+      // UI আপডেট করুন
+      updateDisplays();
+      
+      // ফর্ম রিসেট করুন
+      document.getElementById('amount').value = '';
+      document.getElementById('number').value = '';
+      
+      showNotification(`Withdrawal request for ${amount} points submitted successfully!`);
+    });
+
+    // Navigation functions
+    function switchSection(sectionId) {
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+      });
+      document.getElementById(sectionId).classList.add('active');
+      updateNavIndicator(sectionId);
+    }
+
+    function updateNavIndicator(sectionId) {
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      const navItems = document.querySelectorAll('.nav-item');
+      const navIndex = {
+        'home': 0,
+        'earn': 1,
+        'withdraw': 2,
+        'history': 3,
+        'admin': 4
+      };
+      
+      if (navIndex[sectionId] !== undefined) {
+        navItems[navIndex[sectionId]].classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>
